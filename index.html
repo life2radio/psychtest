@@ -71,44 +71,52 @@
   @keyframes rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
 
   /* ===== 인트로 ===== */
-  .intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:48px 0;text-align:center;}
+  .intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;text-align:center;}
   .brand-tag{
     display:inline-flex;align-items:center;gap:7px;align-self:center;
-    font-size:.78rem;letter-spacing:.14em;color:var(--honey);
+    font-size:.76rem;letter-spacing:.12em;color:var(--honey);
     border:1px solid rgba(232,169,75,.35);border-radius:999px;
-    padding:7px 16px;margin-bottom:34px;
+    padding:6px 15px;margin-bottom:14px;
     background:rgba(232,169,75,.06);
   }
   .al-pd{
-    width:175px;height:auto;display:block;margin:0 auto 6px;
-    filter:drop-shadow(0 16px 38px var(--glow));
+    width:125px;height:auto;display:block;margin:0 auto 2px;
+    filter:drop-shadow(0 14px 32px var(--glow));
     animation:bob 3.2s ease-in-out infinite;
   }
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
   .intro h1{
     font-family:'Gowun Batang',serif;font-weight:700;
-    font-size:2.55rem;line-height:1.25;letter-spacing:-.01em;margin-bottom:18px;
+    font-size:2.15rem;line-height:1.25;letter-spacing:-.01em;margin-bottom:12px;
   }
   .intro h1 .accent{color:var(--honey);position:relative;white-space:nowrap;}
-  .intro .sub{color:var(--cream-dim);font-size:1.05rem;margin-bottom:6px;}
-  .intro .sub strong{color:var(--cream);font-weight:600;}
-  .intro .meta{color:var(--earth-muted);font-size:.86rem;margin:30px 0 14px;letter-spacing:.02em;}
+  .intro .sub{color:var(--cream-dim);font-size:.96rem;line-height:1.55;margin-bottom:14px;}
+  .intro .sub strong{color:var(--cream);font-weight:700;}
+
+  .cred-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:9px;}
+  .cred-chip{font-size:.76rem;font-weight:600;color:var(--honey-soft);background:rgba(232,169,75,.1);border:1px solid rgba(232,169,75,.25);border-radius:999px;padding:5px 12px;}
+  .cred-line{font-size:.8rem;color:var(--earth-muted);margin-bottom:20px;}
+  .cred-line strong{color:var(--cream-dim);}
+
+  .learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 16px;}
+  .learn-item{display:flex;align-items:center;gap:8px;font-size:.86rem;color:var(--cream-dim);background:rgba(58,45,34,.4);border:1px solid rgba(245,236,217,.1);border-radius:11px;padding:10px 12px;text-align:left;}
+  .learn-item .li-ico{font-size:1.05rem;flex:0 0 auto;}
 
   .mode-card{
-    text-align:left;border:1px solid rgba(245,236,217,.13);border-radius:18px;
-    padding:20px 22px;margin:12px 0;cursor:pointer;
+    text-align:left;border:1px solid rgba(245,236,217,.13);border-radius:16px;
+    padding:15px 20px;margin:9px 0;cursor:pointer;
     background:linear-gradient(135deg, rgba(58,45,34,.5), rgba(31,24,19,.5));
     transition:all .25s;position:relative;overflow:hidden;
   }
   .mode-card:active{transform:scale(.98);}
   .mode-card:hover{border-color:var(--honey);box-shadow:0 0 0 1px var(--honey), 0 16px 40px -12px var(--glow);}
-  .mode-card .mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-  .mode-card .mc-title{font-family:'Gowun Batang',serif;font-weight:700;font-size:1.28rem;}
+  .mode-card .mc-top{display:flex;align-items:center;justify-content:space-between;}
+  .mode-card .mc-title{font-family:'Gowun Batang',serif;font-weight:700;font-size:1.22rem;}
   .mode-card .mc-time{font-size:.8rem;color:var(--honey);background:rgba(232,169,75,.12);padding:4px 11px;border-radius:999px;}
-  .mode-card .mc-desc{font-size:.9rem;color:var(--cream-dim);}
-  .mode-card .mc-depth{position:absolute;right:-8px;bottom:-14px;font-size:4.5rem;opacity:.07;}
+  .mode-card .mc-desc{font-size:.86rem;color:var(--cream-dim);margin-top:5px;}
+  .mode-card .mc-depth{position:absolute;right:-8px;bottom:-14px;font-size:3.8rem;opacity:.07;}
 
-  .foot-note{color:var(--earth-muted);font-size:.74rem;margin-top:26px;line-height:1.7;}
+  .foot-note{color:var(--earth-muted);font-size:.72rem;margin-top:16px;line-height:1.6;}
 
   /* ===== 퀴즈 ===== */
   .quiz{min-height:100vh;display:flex;flex-direction:column;padding:26px 0 40px;}
@@ -244,6 +252,10 @@
   /* CTA */
   .cta-block{margin-top:28px;animation:fadeUp .5s both;}
   .cta-share{margin-bottom:14px;}
+  .share-row{display:flex;gap:10px;margin-bottom:8px;}
+  .share-row .btn{flex:1;}
+  .btn-share{background:rgba(245,236,217,.1);color:var(--cream);border:1px solid rgba(245,236,217,.25);}
+  .share-hint{text-align:center;font-size:.82rem;color:var(--earth-muted);margin-bottom:18px;word-break:keep-all;}
   .cta-pago{
     border-radius:20px;padding:26px 24px;text-align:center;
     background:linear-gradient(135deg, rgba(232,169,75,.16), rgba(58,45,34,.5));
@@ -279,36 +291,43 @@
   <!-- ===== 인트로 ===== -->
   <section id="screen-intro" class="screen active">
     <div class="intro">
-      <span class="brand-tag">🐇 파고드림 토끼굴 No.1</span>
+      <span class="brand-tag">🐇 파고드림 토끼굴</span>
       <img class="al-pd" src="al-pd.png" alt="알 PD">
-      <h1>심리를 <span class="accent">파고드림</span><br>나의 진짜 성격 동물</h1>
-      <p class="sub"><strong>16가지 동물 × 4가지 결</strong> = 64가지 유형</p>
-      <p class="sub">표면이 아닌 <strong>깊은 곳의 나</strong>를 발굴합니다</p>
+      <h1>나는 <span class="accent">어떤 사람</span>일까?</h1>
+      <p class="sub">내 안에 숨은 진짜 성격을<br><strong>64가지 동물</strong> 중 하나로 발굴해요</p>
 
-      <p class="meta">— 어디까지 파고들까요? —</p>
+      <div class="learn-grid">
+        <div class="learn-item"><span class="li-ico">🎯</span>내 강점·약점</div>
+        <div class="learn-item"><span class="li-ico">💕</span>연애·일 스타일</div>
+        <div class="learn-item"><span class="li-ico">💞</span>천생연분 궁합</div>
+        <div class="learn-item"><span class="li-ico">🌟</span>나와 닮은 위인</div>
+      </div>
+
+      <div class="cred-row">
+        <span class="cred-chip">빅5 성격</span>
+        <span class="cred-chip">자존감 척도</span>
+        <span class="cred-chip">VIA 강점</span>
+      </div>
+      <p class="cred-line">🌍 세계 50여 개국 연구로 검증된 도구 기반</p>
 
       <div class="mode-card" onclick="App.start('quick')">
         <div class="mc-top">
           <span class="mc-title">살짝 파보기</span>
-          <span class="mc-time">⏱ 약 3분</span>
+          <span class="mc-time">⏱ 3분 · 34문항</span>
         </div>
-        <div class="mc-desc">34문항 · 핵심 성향과 동물 유형을 빠르게</div>
         <div class="mc-depth">🕳️</div>
       </div>
 
       <div class="mode-card" onclick="App.start('full')">
         <div class="mc-top">
           <span class="mc-title">깊이 파고들기</span>
-          <span class="mc-time">⏱ 약 7분</span>
+          <span class="mc-time">⏱ 7분 · 81문항</span>
         </div>
-        <div class="mc-desc">81문항 · 정밀 MBTI + 64유형 세부 결까지 발굴</div>
+        <div class="mc-desc">정밀 MBTI + 64유형 세부 결까지</div>
         <div class="mc-depth">⛏️</div>
       </div>
 
-      <p class="foot-note">
-        BFI-44 · 자존감(RSE) · VIA 강점 척도 기반<br>
-        결과는 재미로 즐겨주세요 · 의학적 진단이 아닙니다
-      </p>
+      <p class="foot-note">결과는 재미로 즐겨주세요 · 의학적 진단이 아닙니다</p>
     </div>
   </section>
 
@@ -358,6 +377,7 @@ const App = (function(){
   let idx  = 0;
   let answers = {};
   let startTime = 0;  // 소요시간 측정
+  let lastResult = null;  // 공유 카드 생성용
 
   const SECTION_LABEL = { info:'기본 정보', bfi:'성격 탐구', rse:'마음 깊이', via:'숨은 강점' };
 
@@ -541,6 +561,7 @@ const App = (function(){
   }
 
   function renderResult(r){
+    lastResult = r;
     const a = r.animal;
     const v = r.variant || {};
     const variantLabel = v.label || a.title;
@@ -669,9 +690,22 @@ const App = (function(){
       html += '</div>';
     }
 
-    // CTA
-    html += '<div class="cta-block" style="animation-delay:1.3s">';
-    html += '  <button class="btn btn-primary btn-block cta-share" onclick="App.share()">🔗 친구에게 결과 공유하기</button>';
+    // 신뢰도 (바이럴 신뢰 요소)
+    html += card('🔬 이 결과, 믿어도 될까요?',
+      '<p style="margin-bottom:12px">네. 이 검사는 재미로 만든 게 아니라, 심리학에서 <strong style="color:var(--cream)">가장 검증된 3대 도구</strong>로 설계됐어요.</p>'+
+      '<div class="strength-list">'+
+      '<div class="sl"><strong style="color:var(--honey)">빅5 성격모델</strong> — 전세계 21개 언어·4만 명 연구로 검증된 학계 표준 성격 모델</div>'+
+      '<div class="sl"><strong style="color:var(--honey)">로젠버그 자존감 척도</strong> — 세계에서 가장 많이 쓰이는 자존감 측정 도구</div>'+
+      '<div class="sl"><strong style="color:var(--honey)">VIA 강점 척도</strong> — 긍정심리학의 대표 강점 프레임</div>'+
+      '</div>'+
+      '<p style="margin-top:12px;font-size:.88rem;color:var(--earth-muted)">위 점수(%)는 과학적 측정값이고, 동물 유형은 결과를 친근하게 보여주는 포장이에요 🐇</p>',
+      1.28);
+
+    html += '  <div class="share-row">';
+    html += '    <button class="btn btn-primary" onclick="App.downloadCard()">📥 결과 카드 저장</button>';
+    html += '    <button class="btn btn-share" onclick="App.shareCard()">🔗 공유하기</button>';
+    html += '  </div>';
+    html += '  <p class="share-hint">저장한 카드를 카톡·인스타에 올리고 친구 동물도 맞혀보세요 🐇</p>';
     html += '  <div class="cta-pago">';
     html += '    <img class="cp-bird" src="al-pd.png" alt="알 PD">';
     html += '    <h4>이 토끼굴, 더 깊은 곳이 있어요</h4>';
@@ -699,14 +733,225 @@ const App = (function(){
     return '<div class="life-item"><div class="life-label">'+emoji+' '+label+'</div><p>'+text+'</p></div>';
   }
 
-  function share(){
-    const url = location.href.split('?')[0];
-    const text = '나의 성격 동물을 발굴했어요 🐇 당신은 어떤 동물일까요?';
-    if(navigator.share){
-      navigator.share({ title:'심리를 파고드림', text:text, url:url }).catch(()=>{});
-    } else {
-      navigator.clipboard.writeText(text + '\n' + url).then(()=>toast('링크가 복사됐어요!')).catch(()=>toast('복사 실패 😢'));
+  // ===== 공유 카드 생성 (canvas) =====
+  let _birdImg = null;
+  function loadBird(){
+    if(_birdImg) return Promise.resolve(_birdImg);
+    return new Promise(res=>{
+      const img = new Image();
+      img.onload = ()=>{ _birdImg = img; res(img); };
+      img.onerror = ()=>res(null);
+      img.src = 'al-pd.png';
+    });
+  }
+
+  function wrapText(ctx, text, x, y, maxW, lineH, maxLines){
+    const chars = text.split('');
+    let line = '', yy = y, count = 1;
+    for(let i=0;i<chars.length;i++){
+      const test = line + chars[i];
+      if(ctx.measureText(test).width > maxW && line){
+        if(maxLines && count >= maxLines){
+          while(ctx.measureText(line+'…').width > maxW && line.length > 1) line = line.slice(0,-1);
+          ctx.fillText(line+'…', x, yy); return yy;
+        }
+        ctx.fillText(line, x, yy); line = chars[i]; yy += lineH; count++;
+      } else { line = test; }
     }
+    ctx.fillText(line, x, yy);
+    return yy;
+  }
+
+  function pill(ctx, text, cx, y, font){
+    ctx.font = font;
+    const w = ctx.measureText(text).width + 46;
+    const h = 58, x = cx - w/2;
+    ctx.fillStyle = 'rgba(232,169,75,0.12)';
+    roundRect(ctx, x, y, w, h, 29); ctx.fill();
+    ctx.strokeStyle = 'rgba(232,169,75,0.42)'; ctx.lineWidth = 2;
+    roundRect(ctx, x, y, w, h, 29); ctx.stroke();
+    ctx.fillStyle = '#F0C674'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, cx, y + h/2);
+    ctx.textBaseline = 'top';
+    return w;
+  }
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  }
+
+  // 폰트 크기 자동 축소 (maxW 넘으면 줄임)
+  function fitFont(ctx, text, weight, basePx, family, maxW){
+    let px = basePx;
+    ctx.font = weight+' '+px+'px '+family;
+    while(ctx.measureText(text).width > maxW && px > 28){
+      px -= 3; ctx.font = weight+' '+px+'px '+family;
+    }
+    return px;
+  }
+
+  // 자간 적용 중앙 텍스트 (현재 baseline 기준)
+  function lsText(ctx, text, cx, y, ls){
+    let total = -ls;
+    for(const ch of text) total += ctx.measureText(ch).width + ls;
+    let x = cx - total/2;
+    const prev = ctx.textAlign; ctx.textAlign = 'left';
+    for(const ch of text){ ctx.fillText(ch, x, y); x += ctx.measureText(ch).width + ls; }
+    ctx.textAlign = prev;
+  }
+
+  async function buildCard(r){
+    const W=1080, H=1350;
+    const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+    const ctx=cv.getContext('2d');
+    const a=r.animal, v=r.variant||{};
+    const variantLabel = v.label || a.title;
+    const mbti = r.mbtiAccurate || v.mbti || a.mbti || '';
+    const co = v.compatible || null;
+    const desc = (v.strength || v.narrative || a.desc || '').trim();
+    const EMO = '"Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif';
+    const SER = '"Gowun Batang", serif';
+    const SAN = 'Pretendard, sans-serif';
+
+    try{
+      await document.fonts.ready;
+      await Promise.all([
+        document.fonts.load('700 74px "Gowun Batang"'),
+        document.fonts.load('800 30px Pretendard'),
+        document.fonts.load('32px Pretendard')
+      ]);
+    }catch(e){}
+
+    // 배경
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#241c15'); g.addColorStop(.5,'#1a140f'); g.addColorStop(1,'#100c08');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    const rg=ctx.createRadialGradient(W/2,320,40,W/2,320,400);
+    rg.addColorStop(0,'rgba(232,169,75,0.30)'); rg.addColorStop(1,'rgba(232,169,75,0)');
+    ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(232,169,75,0.30)'; ctx.lineWidth=2;
+    roundRect(ctx,30,30,W-60,H-60,34); ctx.stroke();
+
+    ctx.textAlign='center'; ctx.textBaseline='top';
+
+    // ── 브랜드 pill (🐇 + 텍스트) ──
+    const blabel='파고드림 토끼굴';
+    ctx.font='34px '+EMO; const r_ew=ctx.measureText('🐇').width;
+    ctx.font='600 28px '+SAN; const r_tw=ctx.measureText(blabel).width;
+    const inner=r_ew+12+r_tw, bw=inner+56, ppx=W/2-bw/2;
+    ctx.strokeStyle='rgba(232,169,75,0.6)'; ctx.lineWidth=2;
+    roundRect(ctx, ppx, 70, bw, 58, 29); ctx.stroke();
+    ctx.textBaseline='middle'; ctx.textAlign='left';
+    let iex=W/2-inner/2;
+    ctx.font='34px '+EMO; ctx.fillText('🐇', iex, 100);
+    ctx.fillStyle='#E8A94B'; ctx.font='600 28px '+SAN; ctx.fillText(blabel, iex+r_ew+12, 100);
+    ctx.textAlign='center';
+
+    // ── 메달리온 ──
+    const mcx=W/2, mcy=322, R=128;
+    const mg=ctx.createRadialGradient(mcx,mcy,R*0.55,mcx,mcy,R+36);
+    mg.addColorStop(0,'rgba(232,169,75,0.5)'); mg.addColorStop(1,'rgba(232,169,75,0)');
+    ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(mcx,mcy,R+36,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2c221a'; ctx.beginPath(); ctx.arc(mcx,mcy,R,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#E8A94B'; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(mcx,mcy,R,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='rgba(120,90,50,0.9)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(mcx,mcy,R-11,0,Math.PI*2); ctx.stroke();
+    ctx.font='150px '+EMO; ctx.fillText(a.animal, mcx, mcy+4);
+    ctx.textBaseline='top';
+
+    // ── 변형 라벨 ──
+    ctx.fillStyle='#F5ECD9';
+    const vlPx = fitFont(ctx, variantLabel, '700', 74, SER, W-200);
+    ctx.font='700 '+vlPx+'px '+SER;
+    ctx.fillText(variantLabel, W/2, 487);
+
+    // ── 정체성 (여우형 D · INTP) ──
+    ctx.fillStyle='#E8A94B'; ctx.font='800 30px '+SAN;
+    lsText(ctx, a.name+'  '+r.variantKey+'  ·  '+mbti, W/2, 590, 3);
+
+    // ── 태그라인 ──
+    if(a.tagline){
+      ctx.fillStyle='#A89680';
+      const tgPx=fitFont(ctx,'"'+a.tagline+'"','400',35,SER,W-200);
+      ctx.font='400 '+tgPx+'px '+SER;
+      ctx.fillText('"'+a.tagline+'"', W/2, 644);
+    }
+
+    // 골드 디바이더
+    ctx.strokeStyle='rgba(232,169,75,0.8)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(W/2-90,716); ctx.lineTo(W/2+90,716); ctx.stroke();
+
+    // ── 핵심 강점 ──
+    ctx.fillStyle='#F0C674'; ctx.font='800 25px '+SAN; ctx.textBaseline='middle';
+    lsText(ctx, '핵심 강점', W/2, 764, 7);
+    ctx.textBaseline='top';
+    if(desc){
+      ctx.fillStyle='#CEC2B0'; ctx.font='32px '+SAN;
+      wrapText(ctx, desc, W/2, 798, W-200, 46, 2);
+    }
+
+    // ── 천생연분 (궁합) ──
+    if(co){
+      ctx.fillStyle='#F0C674'; ctx.font='800 25px '+SAN; ctx.textBaseline='middle';
+      lsText(ctx, '천생연분', W/2, 940, 7);
+      const cLabel=(co.name||'')+(co.variant?(' '+co.variant):'')+(co.label?(' · '+co.label):'');
+      ctx.font='40px '+EMO; const c_ew=ctx.measureText(co.emoji||'').width;
+      ctx.font='700 36px '+SER; const c_tw=ctx.measureText(cLabel).width;
+      const cinner=c_ew+14+c_tw; let ccx=W/2-cinner/2;
+      ctx.textAlign='left';
+      ctx.font='40px '+EMO; ctx.fillText(co.emoji||'', ccx, 990);
+      ctx.fillStyle='#F5ECD9'; ctx.font='700 36px '+SER; ctx.fillText(cLabel, ccx+c_ew+14, 990);
+      ctx.textAlign='center'; ctx.textBaseline='top';
+    }
+
+    // 푸터 디바이더
+    ctx.strokeStyle='rgba(120,90,50,0.7)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(W/2-90,1090); ctx.lineTo(W/2+90,1090); ctx.stroke();
+
+    // 하단 후크
+    ctx.fillStyle='#F5ECD9'; ctx.font='700 46px '+SER;
+    ctx.fillText('너의 진짜 성격 동물은?', W/2, 1128);
+    ctx.fillStyle='#C8AA78'; ctx.font='600 27px '+SAN;
+    ctx.fillText('life2radio.github.io/psychtest', W/2, 1196);
+
+    return cv;
+  }
+
+  function cardBlob(r){
+    return buildCard(r).then(cv => new Promise(res => cv.toBlob(res, 'image/png')));
+  }
+
+  async function downloadCard(){
+    if(!lastResult) return;
+    toast('카드 만드는 중...');
+    try{
+      const blob = await cardBlob(lastResult);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '파고드림_' + (lastResult.animal.name||'결과') + '.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
+      toast('카드를 저장했어요! 📥');
+    }catch(e){ toast('저장 실패 😢 다시 시도해주세요'); }
+  }
+
+  async function shareCard(){
+    if(!lastResult) return;
+    const url = location.href.split('?')[0];
+    const text = '나는 ' + (lastResult.animal.animal) + ' ' + (lastResult.variant.label||lastResult.animal.name) + '! 너의 진짜 성격 동물은? 🐇';
+    toast('카드 만드는 중...');
+    try{
+      const blob = await cardBlob(lastResult);
+      const file = new File([blob], '파고드림_심리테스트.png', {type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({ files:[file], title:'심리를 파고드림', text:text+'\n'+url });
+        return;
+      }
+      // 이미지 공유 미지원 → 링크 공유 + 카드 다운로드
+      if(navigator.share){ await navigator.share({ title:'심리를 파고드림', text:text, url:url }); }
+      else { await navigator.clipboard.writeText(text+'\n'+url); toast('링크 복사됨! 카드도 저장할게요'); }
+      await downloadCard();
+    }catch(e){ /* 사용자가 취소 */ }
   }
 
   function restart(){ show('intro'); }
@@ -717,7 +962,7 @@ const App = (function(){
     setTimeout(()=>t.classList.remove('show'), 2200);
   }
 
-  return { start, next, prev, share, restart };
+  return { start, next, prev, downloadCard, shareCard, restart };
 })();
 </script>
 </body>
