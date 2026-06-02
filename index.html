@@ -231,6 +231,16 @@
   .strength-list.caution .sl::before{content:'◐';color:var(--earth-muted);}
   .lead-line{font-size:1.02rem;color:var(--cream);line-height:1.7;margin-bottom:14px;padding:14px 16px;background:rgba(232,169,75,.08);border-radius:12px;border-left:3px solid var(--honey);word-break:keep-all;}
 
+  /* 세부 성향 10가지 */
+  .facet-group{margin-bottom:18px;}
+  .facet-group:last-child{margin-bottom:0;}
+  .facet-axis{font-size:.82rem;font-weight:700;color:var(--honey);letter-spacing:.06em;margin-bottom:9px;}
+  .facet-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .fr-label{width:84px;font-size:.88rem;color:var(--cream-dim);flex:0 0 auto;}
+  .fr-track{flex:1;height:8px;border-radius:99px;background:rgba(21,16,12,.6);overflow:hidden;}
+  .fr-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--honey),var(--honey-soft));box-shadow:0 0 8px var(--glow);transition:width 1s cubic-bezier(.2,.8,.2,1);}
+  .fr-val{width:40px;font-size:.84rem;font-weight:700;color:var(--honey);text-align:right;flex:0 0 auto;}
+
   /* CTA */
   .cta-block{margin-top:28px;animation:fadeUp .5s both;}
   .cta-share{margin-bottom:14px;}
@@ -581,6 +591,28 @@ const App = (function(){
     let barBody = bar('외향성 (E)',s.E)+bar('개방성 (O)',s.O)+bar('친화성 (A)',s.A)+bar('성실성 (C)',s.C)+bar('자존감 (RSE)',s.RSE);
     html += card('📊 나의 성격 좌표', barBody, .95);
 
+    // 세부 성향 10가지
+    const af = r.allFacets || {};
+    function fval(k, fb){ const x = af[k]; return (x!=null) ? x : Math.round(fb||50); }
+    const facetGroups = [
+      {label:'외향성', items:[['사교성', fval('sociability',s.E)], ['주도성', fval('assertiveness',s.E)]]},
+      {label:'개방성', items:[['지적 호기심', fval('intellect',s.O)], ['예술 감수성', fval('aesthetics',s.O)]]},
+      {label:'친화성', items:[['공감 능력', fval('compassion',s.A)], ['협력성', fval('cooperation',s.A)]]},
+      {label:'성실성', items:[['계획성', fval('order',s.C)], ['성취 지향', fval('industriousness',s.C)]]},
+      {label:'안정성', items:[['불안 관리', 100-fval('anxiety',s.N)], ['감정 조절', 100-fval('volatility',s.N)]]}
+    ];
+    let facetBody = '';
+    facetGroups.forEach(g=>{
+      facetBody += '<div class="facet-group"><div class="facet-axis">'+g.label+'</div>';
+      g.items.forEach(it=>{
+        facetBody += '<div class="facet-row"><span class="fr-label">'+it[0]+'</span>'+
+                     '<div class="fr-track"><div class="fr-fill" style="width:0" data-w="'+it[1]+'"></div></div>'+
+                     '<span class="fr-val">'+it[1]+'%</span></div>';
+      });
+      facetBody += '</div>';
+    });
+    html += card('🔬 세부 성향 10가지', facetBody, .98);
+
     // 라이프 — 연애/일/돈/인간관계
     let lifeBody = '';
     if(v.romance)      lifeBody += lifeItem('💕','연애 스타일', v.romance);
@@ -654,7 +686,7 @@ const App = (function(){
     document.getElementById('result-content').innerHTML = html;
 
     setTimeout(()=>{
-      document.querySelectorAll('.bar-fill').forEach(el=>{
+      document.querySelectorAll('.bar-fill, .fr-fill').forEach(el=>{
         const w = el.getAttribute('data-w'); if(w!==null) el.style.width = w + '%';
       });
     }, 300);
