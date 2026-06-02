@@ -36,7 +36,7 @@
     };
   }
 
-  // ── 변형(A/B/C/D) 설명 ──
+  // ── 변형(A/B/C/D) 설명 — 모든 상세 필드 통합 ──
   function getVariantDescription(animalEmoji, variantKey) {
     if (typeof ANIMAL_FACET_MAP === 'undefined' || !ANIMAL_FACET_MAP[animalEmoji]) return null;
     var facetEntry = ANIMAL_FACET_MAP[animalEmoji];
@@ -46,12 +46,35 @@
     Object.keys(PSYCH_ANIMALS).forEach(function (k) {
       if (PSYCH_ANIMALS[k].animal === animalEmoji) animalData = PSYCH_ANIMALS[k];
     });
+    // 상세 강점/주의점 (STRENGTH_MAP 우선 → 길고 풍부)
+    var sm = (typeof ANIMAL_STRENGTH_MAP !== 'undefined') ? ANIMAL_STRENGTH_MAP[animalEmoji] : null;
+    var strengths = (sm && sm.strengths && sm.strengths.length) ? sm.strengths : (animalData ? (animalData.strengths || []) : []);
+    var cautions  = (sm && sm.cautions  && sm.cautions.length)  ? sm.cautions  : (animalData ? (animalData.cautions  || []) : []);
+    // 닮은 위인 (EXTRA_CELEBS[emoji+variantKey] 우선 → 3명+설명)
+    var celebs = [];
+    if (typeof EXTRA_CELEBS !== 'undefined' && EXTRA_CELEBS[animalEmoji + variantKey]) {
+      celebs = EXTRA_CELEBS[animalEmoji + variantKey];
+    } else if (variant.celebs && variant.celebs.length) {
+      celebs = variant.celebs;
+    } else if (animalData && animalData.celebrities) {
+      celebs = animalData.celebrities;
+    }
     return {
-      label:       variant.label || facetEntry.name,
-      narrative:   animalData ? (animalData.desc      || '') : '',
-      strengths:   animalData ? (animalData.strengths || []) : [],
-      cautions:    animalData ? (animalData.cautions  || []) : [],
-      celebrities: variant.celebs || []
+      label:        variant.label || facetEntry.name,
+      mbti:         variant.mbti || (animalData ? animalData.mbti : ''),
+      narrative:    animalData ? (animalData.desc || '') : '',
+      strength:     variant.strength || '',
+      weakness:     variant.weakness || '',
+      growth:       variant.growth || '',
+      romance:      variant.romance || '',
+      work:         variant.work || '',
+      money:        variant.money || '',
+      relationship: variant.relationship || '',
+      affirmation:  variant.affirmation || '',
+      compatible:   variant.compatible || null,
+      strengths:    strengths,
+      cautions:     cautions,
+      celebrities:  celebs
     };
   }
 

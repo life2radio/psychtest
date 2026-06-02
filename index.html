@@ -196,8 +196,40 @@
   .tag-row{display:flex;flex-wrap:wrap;gap:9px;}
   .tag{font-size:.92rem;padding:8px 14px;border-radius:11px;background:rgba(232,169,75,.1);border:1px solid rgba(232,169,75,.22);color:var(--cream);}
   .tag.caution{background:rgba(245,236,217,.06);border-color:rgba(245,236,217,.14);color:var(--cream-dim);}
-  .celeb-row{display:flex;flex-wrap:wrap;gap:10px;}
-  .celeb{font-size:.95rem;padding:9px 15px;border-radius:12px;background:rgba(21,16,12,.5);border:1px solid rgba(245,236,217,.12);}
+  .celeb-row{display:flex;flex-direction:column;gap:12px;}
+  .celeb{font-size:.95rem;padding:14px 16px;border-radius:12px;background:rgba(21,16,12,.5);border:1px solid rgba(245,236,217,.12);}
+  .celeb .cn{font-weight:700;color:var(--honey);display:block;margin-bottom:4px;}
+  .celeb .cd{font-size:.88rem;color:var(--cream-dim);line-height:1.6;word-break:keep-all;}
+
+  /* 라이프 섹션 (연애/일/돈/관계) */
+  .life-item{padding:16px 0;border-bottom:1px solid rgba(245,236,217,.08);}
+  .life-item:last-child{border-bottom:none;padding-bottom:0;}
+  .life-item:first-child{padding-top:0;}
+  .life-label{display:flex;align-items:center;gap:8px;font-family:'Gowun Batang',serif;font-weight:700;font-size:1.05rem;margin-bottom:8px;color:var(--honey-soft);}
+  .life-item p{color:var(--cream-dim);font-size:.98rem;line-height:1.7;word-break:keep-all;}
+
+  /* 궁합 */
+  .compat-box{text-align:center;}
+  .compat-emoji{font-size:3.2rem;filter:drop-shadow(0 6px 20px var(--glow));}
+  .compat-name{font-family:'Gowun Batang',serif;font-weight:700;font-size:1.3rem;margin:8px 0 4px;}
+  .compat-label{color:var(--honey);font-size:.92rem;margin-bottom:14px;}
+  .compat-reason{color:var(--cream-dim);font-size:.95rem;line-height:1.7;text-align:left;word-break:keep-all;}
+
+  /* 맞춤 확언 */
+  .affirm-box{
+    text-align:center;border-radius:20px;padding:30px 26px;margin:18px 0;
+    background:linear-gradient(160deg, rgba(232,169,75,.14), rgba(31,24,19,.5));
+    border:1px solid rgba(232,169,75,.28);animation:fadeUp .5s both;
+  }
+  .affirm-box .aq{font-size:2rem;color:var(--honey);line-height:0;}
+  .affirm-box p{font-family:'Gowun Batang',serif;font-size:1.25rem;line-height:1.6;color:var(--cream);margin:10px 0;word-break:keep-all;font-style:italic;}
+  .affirm-box .ahint{font-size:.82rem;color:var(--earth-muted);margin-top:8px;}
+
+  .strength-list{display:flex;flex-direction:column;gap:12px;}
+  .strength-list .sl{font-size:.96rem;line-height:1.6;color:var(--cream-dim);padding-left:22px;position:relative;word-break:keep-all;}
+  .strength-list .sl::before{content:'✦';position:absolute;left:0;color:var(--honey);}
+  .strength-list.caution .sl::before{content:'◐';color:var(--earth-muted);}
+  .lead-line{font-size:1.02rem;color:var(--cream);line-height:1.7;margin-bottom:14px;padding:14px 16px;background:rgba(232,169,75,.08);border-radius:12px;border-left:3px solid var(--honey);word-break:keep-all;}
 
   /* CTA */
   .cta-block{margin-top:28px;animation:fadeUp .5s both;}
@@ -456,10 +488,10 @@ const App = (function(){
 
   function renderResult(r){
     const a = r.animal;
-    const variantLabel = (r.variant && r.variant.label) ? r.variant.label : a.title;
-    const celebs = (r.variant && r.variant.celebrities && r.variant.celebrities.length)
-                    ? r.variant.celebrities : (a.celebrities||[]);
-    const mbti = r.mbtiAccurate || a.mbti || '';
+    const v = r.variant || {};
+    const variantLabel = v.label || a.title;
+    const celebs = (v.celebrities && v.celebrities.length) ? v.celebrities : (a.celebrities||[]);
+    const mbti = r.mbtiAccurate || v.mbti || a.mbti || '';
     const s = r.scores;
 
     let html = '';
@@ -471,52 +503,98 @@ const App = (function(){
     if(a.tagline) html += '  <div class="r-tagline">"'+a.tagline+'"</div>';
     html += '  <div class="r-badges">';
     if(mbti)        html += '<span class="r-badge">MBTI '+mbti+'</span>';
-    html += '<span class="r-badge">유형 '+r.variantKey+'형</span>';
+    html += '<span class="r-badge">'+r.variantKey+'형</span>';
     html += '<span class="r-badge">자존감 '+s.RSE+'점</span>';
     html += '  </div>';
     html += '</div>';
 
-    // 나의 결
-    if(r.variant && r.variant.narrative){
-      html += '<div class="r-card" style="animation-delay:.7s"><h3>🔍 내 마음의 결</h3><p>'+r.variant.narrative+'</p></div>';
+    // 내 마음의 결 (narrative)
+    if(v.narrative){
+      html += card('🔍 내 마음의 결', '<p>'+v.narrative+'</p>', .7);
     }
 
-    // 빅5
-    html += '<div class="r-card" style="animation-delay:.8s"><h3>📊 나의 성격 좌표</h3>';
-    html += bar('외향성 (E)', s.E);
-    html += bar('개방성 (O)', s.O);
-    html += bar('친화성 (A)', s.A);
-    html += bar('성실성 (C)', s.C);
-    html += bar('자존감 (RSE)', s.RSE);
-    html += '</div>';
-
-    // 강점
-    if(a.strengths && a.strengths.length){
-      html += '<div class="r-card" style="animation-delay:.9s"><h3>💪 타고난 강점</h3><div class="tag-row">';
-      a.strengths.forEach(t=> html += '<span class="tag">'+t+'</span>');
-      html += '</div></div>';
+    // 핵심 강점 (변형별 한 줄 + 상세 리스트)
+    let strBody = '';
+    if(v.strength) strBody += '<div class="lead-line">'+v.strength+'</div>';
+    if(v.strengths && v.strengths.length){
+      strBody += '<div class="strength-list">';
+      v.strengths.forEach(t=> strBody += '<div class="sl">'+t+'</div>');
+      strBody += '</div>';
     }
+    if(strBody) html += card('💪 타고난 강점', strBody, .8);
+
+    // 그림자 / 약점
+    if(v.weakness){
+      html += card('🌑 나의 그림자', '<div class="lead-line" style="border-left-color:var(--earth-muted);background:rgba(245,236,217,.05)">'+v.weakness+'</div>', .85);
+    }
+
+    // 성장 포인트
+    if(v.growth){
+      html += card('🌿 성장 포인트', '<p>'+v.growth+'</p>', .9);
+    }
+
+    // 빅5 좌표
+    let barBody = bar('외향성 (E)',s.E)+bar('개방성 (O)',s.O)+bar('친화성 (A)',s.A)+bar('성실성 (C)',s.C)+bar('자존감 (RSE)',s.RSE);
+    html += card('📊 나의 성격 좌표', barBody, .95);
+
+    // 라이프 — 연애/일/돈/인간관계
+    let lifeBody = '';
+    if(v.romance)      lifeBody += lifeItem('💕','연애 스타일', v.romance);
+    if(v.work)         lifeBody += lifeItem('💼','일·커리어', v.work);
+    if(v.money)        lifeBody += lifeItem('💰','돈 쓰는 법', v.money);
+    if(v.relationship) lifeBody += lifeItem('🤝','인간관계', v.relationship);
+    if(lifeBody) html += card('🎭 분야별 나의 모습', lifeBody, 1.0);
+
+    // 궁합
+    if(v.compatible){
+      const c = v.compatible;
+      let cb = '<div class="compat-box">';
+      cb += '<div class="compat-emoji">'+(c.emoji||'')+'</div>';
+      cb += '<div class="compat-name">'+(c.name||'')+(c.variant?' '+c.variant+'형':'')+'</div>';
+      if(c.label) cb += '<div class="compat-label">'+c.label+'</div>';
+      if(c.reason) cb += '<div class="compat-reason">'+c.reason+'</div>';
+      cb += '</div>';
+      html += card('💞 환상의 궁합', cb, 1.05);
+    }
+
     // VIA 숨은 강점
     if(r.viaStrengths && r.viaStrengths.length){
-      html += '<div class="r-card" style="animation-delay:.95s"><h3>✨ 숨은 강점</h3><div class="tag-row">';
-      [...new Set(r.viaStrengths)].forEach(t=> html += '<span class="tag">'+t+'</span>');
-      html += '</div></div>';
+      let tb = '<div class="tag-row">';
+      [...new Set(r.viaStrengths)].forEach(t=> tb += '<span class="tag">'+t+'</span>');
+      tb += '</div>';
+      html += card('✨ 숨은 강점', tb, 1.1);
     }
+
     // 주의점
-    if(a.cautions && a.cautions.length){
-      html += '<div class="r-card" style="animation-delay:1s"><h3>🌙 살짝 조심할 점</h3><div class="tag-row">';
-      a.cautions.forEach(t=> html += '<span class="tag caution">'+t+'</span>');
-      html += '</div></div>';
+    if(v.cautions && v.cautions.length){
+      let cb = '<div class="strength-list caution">';
+      v.cautions.forEach(t=> cb += '<div class="sl">'+t+'</div>');
+      cb += '</div>';
+      html += card('🌙 살짝 조심할 점', cb, 1.15);
     }
+
     // 닮은 위인
     if(celebs && celebs.length){
-      html += '<div class="r-card" style="animation-delay:1.05s"><h3>🌟 나와 닮은 사람</h3><div class="celeb-row">';
-      celebs.forEach(c=>{ const nm = (typeof c==='string')?c:(c.name||''); if(nm) html += '<span class="celeb">'+nm+'</span>'; });
-      html += '</div></div>';
+      let cb = '<div class="celeb-row">';
+      celebs.forEach(c=>{
+        if(typeof c === 'string'){ cb += '<div class="celeb"><span class="cn">'+c+'</span></div>'; }
+        else { cb += '<div class="celeb"><span class="cn">'+(c.name||'')+'</span>'+(c.desc?'<span class="cd">'+c.desc+'</span>':'')+'</div>'; }
+      });
+      cb += '</div>';
+      html += card('🌟 나와 닮은 사람', cb, 1.2);
+    }
+
+    // 맞춤 확언 (인생확언 연결고리)
+    if(v.affirmation){
+      html += '<div class="affirm-box" style="animation-delay:1.25s">';
+      html += '<div class="aq">"</div>';
+      html += '<p>'+v.affirmation+'</p>';
+      html += '<div class="ahint">— '+variantLabel+'을 위한 오늘의 확언 —</div>';
+      html += '</div>';
     }
 
     // CTA
-    html += '<div class="cta-block" style="animation-delay:1.15s">';
+    html += '<div class="cta-block" style="animation-delay:1.3s">';
     html += '  <button class="btn btn-primary btn-block cta-share" onclick="App.share()">🔗 친구에게 결과 공유하기</button>';
     html += '  <div class="cta-pago">';
     html += '    <div class="cp-bird">🐤</div>';
@@ -531,12 +609,18 @@ const App = (function(){
 
     document.getElementById('result-content').innerHTML = html;
 
-    // 바 애니메이션
     setTimeout(()=>{
       document.querySelectorAll('.bar-fill').forEach(el=>{
         const w = el.getAttribute('data-w'); if(w!==null) el.style.width = w + '%';
       });
     }, 300);
+  }
+
+  function card(title, body, delay){
+    return '<div class="r-card" style="animation-delay:'+(delay||.7)+'s"><h3>'+title+'</h3>'+body+'</div>';
+  }
+  function lifeItem(emoji, label, text){
+    return '<div class="life-item"><div class="life-label">'+emoji+' '+label+'</div><p>'+text+'</p></div>';
   }
 
   function share(){
