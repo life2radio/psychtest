@@ -393,7 +393,6 @@
     <p class="co-hint" id="co-hint">📲 이미지를 <b>꾹 눌러</b> ‘사진에 저장’을 선택하세요</p>
     <img class="co-img" id="co-img" alt="결과 카드">
     <div class="co-actions">
-      <button class="btn btn-primary" id="co-share" onclick="App.saveViaShare()">📤 사진에 저장 / 공유</button>
       <a class="btn btn-primary" id="co-download" download="파고드림_심리테스트.png">기기에 다운로드</a>
       <button class="btn btn-share" onclick="App.closeOverlay()">닫기</button>
     </div>
@@ -416,6 +415,7 @@ const App = (function(){
   let answers = {};
   let startTime = 0;  // 소요시간 측정
   let lastResult = null;  // 공유 카드 생성용
+  let _preCardBlob = null; // 미리 만들어 둔 카드
 
   const SECTION_LABEL = { info:'기본 정보', bfi:'성격 탐구', rse:'마음 깊이', via:'숨은 강점' };
 
@@ -601,6 +601,9 @@ const App = (function(){
 
   function renderResult(r){
     lastResult = r;
+    _preCardBlob = null;
+    // 결과 보는 동안 카드를 미리 만들어 둠 → 저장/공유 탭 시 즉시 동작 (iOS 안정성)
+    try{ buildCard(r).then(cv => cv.toBlob(b => { _preCardBlob = b; }, 'image/png')).catch(()=>{}); }catch(e){}
     const a = r.animal;
     const v = r.variant || {};
     const variantLabel = v.label || a.title;
@@ -962,89 +965,94 @@ const App = (function(){
   }
 
   let _cardUrl = null;
-  let _cardBlob = null;
   const _isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
 
-  function showCardOverlay(blob){
-    if(_cardUrl){ try{URL.revokeObjectURL(_cardUrl);}catch(e){} }
-    _cardBlob = blob;
-    _cardUrl = URL.createObjectURL(blob);
-    document.getElementById('co-img').src = _cardUrl;
+  // 데이터URL 이미지로 오버레이 (꾹 눌러 저장 — 데이터URL이 blob보다 저장 잘 됨)
+  function showCardOverlay(dataUrl){
+    document.getElementById('co-img').src = dataUrl;
     const dl = document.getElementById('co-download');
-    dl.href = _cardUrl;
+    dl.href = dataUrl;
     dl.download = '파고드림_' + (lastResult && lastResult.animal ? lastResult.animal.name : '결과') + '.png';
-    const hint = document.getElementById('co-hint');
-    const shareBtn = document.getElementById('co-share');
-    if(_isMobile){
-      hint.innerHTML = '📲 위 이미지를 <b>꾹 눌러(길게 눌러)</b> ‘사진에 저장’을 선택하거나,<br>아래 버튼으로 저장하세요';
-      shareBtn.style.display = '';
-      dl.style.display = 'none';
-    } else {
-      hint.innerHTML = '🖱️ 이미지를 우클릭 저장하거나 아래 버튼으로 다운로드하세요';
-      shareBtn.style.display = 'none';
-      dl.style.display = '';
-    }
+    document.getElementById('co-hint').innerHTML =
+      _isMobile ? '📲 위 이미지를 <b>꾹 눌러(길게)</b> ‘사진에 저장’을 선택하세요'
+                : '🖱️ 이미지를 우클릭해 저장하거나 아래 버튼을 누르세요';
+    dl.style.display = _isMobile ? 'none' : '';
     document.getElementById('card-overlay').classList.add('show');
   }
-
-  // 공유 시트로 사진 저장 (모바일)
-  async function saveViaShare(){
-    if(!_cardBlob) return;
-    try{
-      const file = new File([_cardBlob], '파고드림_심리테스트.png', {type:'image/png'});
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        await navigator.share({ files:[file], title:'심리를 파고드림' });
-      } else {
-        toast('이미지를 꾹 눌러 저장해주세요 📲');
-      }
-    }catch(e){ /* 취소 */ }
-  }
-
   function closeOverlay(e){
     if(e && e.target && e.target.tagName === 'A') return;
     document.getElementById('card-overlay').classList.remove('show');
   }
 
-  async function downloadCard(){
-    if(!lastResult) return;
-    toast('카드 만드는 중...');
-    try{
-      const blob = await cardBlob(lastResult);
-      showCardOverlay(blob);
-    }catch(e){ toast('카드 생성 실패 😢 다시 시도해주세요'); }
+  function blobToDataURL(blob){
+    return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>res(null); r.readAsDataURL(blob); });
   }
 
-  async function shareCard(){
+  // 카드 저장/공유 공통 — 한 번 탭으로 처리
+  async function saveOrShare(withText){
     if(!lastResult) return;
-    const url = location.href.split('?')[0];
-    const text = '나는 ' + lastResult.animal.animal + ' ' + (lastResult.variant.label||lastResult.animal.name) + '! 너의 진짜 성격 동물은? 🐇';
-    toast('카드 만드는 중...');
-    try{
-      const blob = await cardBlob(lastResult);
-      const file = new File([blob], '파고드림_심리테스트.png', {type:'image/png'});
-      // 1순위: 이미지 파일 공유 (사진 저장·카톡 전송 가능 — 모바일 최선)
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{ await navigator.share({ files:[file], title:'심리를 파고드림', text:text }); return; }
-        catch(e){ if(e && e.name==='AbortError') return; }
+    const fname = '파고드림_' + (lastResult.animal.name||'결과') + '.png';
+
+    // 미리 만들어 둔 카드가 있으면 즉시 사용 (await 없이 → iOS 제스처 유지)
+    let blob = _preCardBlob;
+    if(!blob){
+      toast('카드 만드는 중...');
+      try{
+        const cv = await buildCard(lastResult);
+        blob = await new Promise(res => cv.toBlob(res, 'image/png'));
+        _preCardBlob = blob;
+      }catch(e){ toast('카드 생성 실패 😢 다시 시도해주세요'); return; }
+    }
+
+    // ① 파일 공유 지원 → 네이티브 공유 시트(‘사진 저장’ 포함) 바로 띄움
+    if(blob && navigator.canShare){
+      const file = new File([blob], fname, {type:'image/png'});
+      if(navigator.canShare({files:[file]})){
+        try{
+          const data = {files:[file]};
+          if(withText) data.text = '나는 '+lastResult.animal.animal+' '+(lastResult.variant.label||lastResult.animal.name)+'! 너의 진짜 성격 동물은? 🐇';
+          await navigator.share(data);
+          return;
+        }catch(e){ if(e && e.name==='AbortError') return; /* 그 외엔 폴백 */ }
       }
-      // 2순위: 오버레이로 띄워서 꾹 눌러 저장
-      showCardOverlay(blob);
-    }catch(e){ toast('카드 생성 실패 😢'); }
+    }
+
+    // ② 데스크톱 → 바로 다운로드
+    if(!_isMobile && blob){
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=u; a.download=fname;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u), 4000);
+      toast('저장됐어요! 📥');
+      return;
+    }
+
+    // ③ 모바일인데 공유 미지원(인앱 브라우저 등) → 데이터URL 이미지로 띄워 꾹 눌러 저장
+    const durl = await blobToDataURL(blob);
+    if(durl) showCardOverlay(durl);
+    else toast('저장 실패 😢 다시 시도해주세요');
   }
+
+  function downloadCard(){ return saveOrShare(false); }
+  function shareCard(){ return saveOrShare(true); }
 
   // 테스트 자체(링크) 공유 — 친구 초대용
   function shareTest(){
     const url = location.href.split('?')[0].split('#')[0];
     const text = '나는 어떤 사람일까? 🐇 심리학 기반 64유형 성격 테스트 — 너의 진짜 성격 동물 찾아봐!';
+    // navigator.share 가 있으면 무조건 공유 시트 (실패해도 복사로 안 떨어뜨림)
     if(navigator.share){
-      navigator.share({ title:'나는 어떤 사람일까? · 파고드림', text:text, url:url }).catch(()=>{});
-    } else if(navigator.clipboard){
-      navigator.clipboard.writeText(text+'\n'+url)
-        .then(()=>toast('링크 복사됨! 친구에게 붙여넣기 하세요 🔗'))
-        .catch(()=>toast('복사 실패 😢'));
-    } else {
-      toast('이 주소를 복사해 공유하세요: '+url);
+      navigator.share({ title:'나는 어떤 사람일까? · 파고드림', text:text, url:url }).catch(function(){});
+      return;
     }
+    // 공유 미지원 브라우저에서만 복사
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text+'\n'+url)
+        .then(function(){ toast('링크 복사됨! 친구에게 붙여넣기 하세요 🔗'); })
+        .catch(function(){ toast('이 주소를 길게 눌러 복사하세요: '+url); });
+      return;
+    }
+    toast('이 주소를 길게 눌러 복사하세요: '+url);
   }
 
   function restart(){ show('intro'); }
@@ -1085,7 +1093,7 @@ const App = (function(){
   }
 
   initSavedBanner();
-  return { start, next, prev, downloadCard, shareCard, shareTest, saveViaShare, restart, showSaved, closeOverlay };
+  return { start, next, prev, downloadCard, shareCard, shareTest, restart, showSaved, closeOverlay };
 })();
 </script>
 </body>
