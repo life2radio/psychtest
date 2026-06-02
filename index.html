@@ -338,11 +338,16 @@
 <script src="psych-engine.js"></script>
 
 <script>
+// ★★★ 구글 시트 연동 (인생확언 앱과 동일한 보안 Apps Script 재사용) ★★★
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxxFZ_BA7u37G4UTHYYdi_KCKqdXicNUWpWqfOdTpCjH3O0wOaDIeJAKpfKb1mRwB8eWQ/exec';
+const APP_SECRET    = 'QSwbSAijYX6VHwd78ko68aQ6sk3gg5Nd';
+
 const App = (function(){
   let mode = 'full';
   let flat = [];      // 평탄화된 문항 배열
   let idx  = 0;
   let answers = {};
+  let startTime = 0;  // 소요시간 측정
 
   const SECTION_LABEL = { info:'기본 정보', bfi:'성격 탐구', rse:'마음 깊이', via:'숨은 강점' };
 
@@ -365,6 +370,7 @@ const App = (function(){
     mode = m;
     answers = {};
     idx = 0;
+    startTime = Date.now();
     buildFlat();
     show('quiz');
     render();
@@ -477,8 +483,46 @@ const App = (function(){
   function finish(){
     document.getElementById('q-bar-fill').style.width = '100%';
     const result = PsychEngine.calcResult(answers, mode);
+    sendToSheet(result);
     renderResult(result);
     show('result');
+  }
+
+  // 결과를 구글 시트로 전송 (보안 토큰 포함, fire-and-forget)
+  function sendToSheet(r){
+    if(!SHEET_API_URL || SHEET_API_URL.indexOf('script.google.com') < 0) return;
+    try {
+      const v = r.variant || {};
+      const a = r.animal || {};
+      const s = r.scores || {};
+      const celebs = (v.celebrities && v.celebrities.length ? v.celebrities : (a.celebrities||[]))
+                       .map(c => (typeof c === 'string' ? c : (c.name||''))).filter(Boolean).join(', ');
+      const payload = {
+        action: 'pago_psych',
+        token: APP_SECRET,
+        animalType:   a.name || '',
+        animalEmoji:  a.animal || '',
+        typeKey:      r.typeKey || '',
+        variantKey:   r.variantKey || '',
+        variantLabel: v.label || '',
+        mbti:         r.mbtiAccurate || v.mbti || a.mbti || '',
+        E: s.E, O: s.O, A: s.A, C: s.C, N: s.N, RSE: s.RSE,
+        mode:        r._mode || mode,
+        age:         (r.info && r.info.age)    || '',
+        region:      (r.info && r.info.region) || '',
+        route:       (r.info && r.info.route)  || '',
+        elapsed_sec: startTime ? Math.round((Date.now()-startTime)/1000) : '',
+        viaStrengths: [...new Set(r.viaStrengths||[])].join(', '),
+        celebs:       celebs,
+        compat:       v.compatible ? ((v.compatible.emoji||'')+' '+(v.compatible.name||'')) : '',
+        answers:      JSON.stringify(r.pAnswers || {})
+      };
+      fetch(SHEET_API_URL, {
+        method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      }).catch(()=>{});
+    } catch(e){}
   }
 
   function bar(label, val, cls){
