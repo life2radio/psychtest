@@ -80,8 +80,8 @@
     background:rgba(232,169,75,.06);
   }
   .al-pd{
-    font-size:4.6rem;line-height:1;margin-bottom:8px;
-    filter:drop-shadow(0 8px 30px var(--glow));
+    width:175px;height:auto;display:block;margin:0 auto 6px;
+    filter:drop-shadow(0 16px 38px var(--glow));
     animation:bob 3.2s ease-in-out infinite;
   }
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
@@ -239,7 +239,7 @@
     background:linear-gradient(135deg, rgba(232,169,75,.16), rgba(58,45,34,.5));
     border:1px solid rgba(232,169,75,.3);margin-bottom:14px;
   }
-  .cta-pago .cp-bird{font-size:2.6rem;}
+  .cta-pago .cp-bird{width:80px;height:auto;}
   .cta-pago h4{font-family:'Gowun Batang',serif;font-size:1.25rem;margin:8px 0 6px;}
   .cta-pago p{color:var(--cream-dim);font-size:.92rem;margin-bottom:18px;word-break:keep-all;}
   .btn-pago{background:#FF0000;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:13px;font-weight:700;}
@@ -270,7 +270,7 @@
   <section id="screen-intro" class="screen active">
     <div class="intro">
       <span class="brand-tag">🐇 파고드림 토끼굴 No.1</span>
-      <div class="al-pd">🐤</div>
+      <img class="al-pd" src="al-pd.png" alt="알 PD">
       <h1>심리를 <span class="accent">파고드림</span><br>나의 진짜 성격 동물</h1>
       <p class="sub"><strong>16가지 동물 × 4가지 결</strong> = 64가지 유형</p>
       <p class="sub">표면이 아닌 <strong>깊은 곳의 나</strong>를 발굴합니다</p>
@@ -597,7 +597,7 @@ const App = (function(){
     html += '<div class="cta-block" style="animation-delay:1.3s">';
     html += '  <button class="btn btn-primary btn-block cta-share" onclick="App.share()">🔗 친구에게 결과 공유하기</button>';
     html += '  <div class="cta-pago">';
-    html += '    <div class="cp-bird">🐤</div>';
+    html += '    <img class="cp-bird" src="al-pd.png" alt="알 PD">';
     html += '    <h4>이 토끼굴, 더 깊은 곳이 있어요</h4>';
     html += '    <p>매주 새로운 토끼굴을 파는 파고드림.<br>심리·뇌과학·AI까지 같이 파고들어요.</p>';
     html += '    <a class="btn-pago" href="https://www.youtube.com/@pagodream" target="_blank" rel="noopener">▶ 파고드림 구독하기</a>';
